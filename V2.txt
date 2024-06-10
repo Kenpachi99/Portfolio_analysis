@@ -7,6 +7,8 @@ import plotly.express as px
 import plotly.graph_objects as go
 # from streamlit_extras import addvertical_space as avs
 
+def weighted_avg(values):
+    return (values * df.loc[values.index, 'Market_Value']).sum() / values.sum()
 
 #Changing the output format of numbers
 def format(number):
@@ -67,12 +69,32 @@ if rad == 'PORT_USD':
     port_analyse = port_usd
     if grouping == 'None':
         #st.dataframe(port_analyse)
-        st.write(port_analyse.head(5),f"Total Value:", format(port_analyse['Market Value'].sum()))
+        # Calculate the total market value
+        total_market_value = port_analyse['Market_Value'].sum()
+        st.write(f"Total Value:", format(total_market_value))
+        # Calculate the weighted coupon
+        port_analyse['Weighted_Coupon'] = (port_analyse['Coupon'] * port_analyse['Market_Value']) / total_market_value
+        st.write(f"Weighted Coupon :", format(port_analyse['Weighted_Coupon'].sum()))
+        # Calculate the WAL_to_Maturity
+        st.write("\n *aggregation done on basis of mkt val",)
     else:
         fig = px.pie(port_analyse, values='Market Value', names=grouping, title='Market Value by each category')
         fig.update_traces(textposition='inside')
         fig.update_layout(uniformtext_minsize=12, uniformtext_mode='hide')
         st.plotly_chart(fig, use_container_width=True)
+        table_df = port_analyse[[grouping,'Coupon','Duration','Market Value', 'WAL to Maturity']]
+        aggregation = {
+            'Coupon': weighted_avg,
+            'Duration': weighted_avg,
+            'Market_Value': 'sum',
+            'WAL_to_Maturity': weighted_avg
+        }
+
+        # Group by 'grouping' column and apply custom aggregations
+        grouped_df = table_df.groupby('grouping').agg(aggregation).reset_index()
+        st.write(grouped_df)
+        st.write("\n *aggregation done on basis of mkt val",)
+
         for category in port_analyse[grouping].unique():
             st.write("\n", category, " : ",format(port_analyse[port_analyse[grouping]==category]['Market Value'].sum()))
         
@@ -132,3 +154,4 @@ if rad == 'BOTH':
 
 #if rad2 == 'Data and Insights': TBC
     st.write("COMING UP!")
+
