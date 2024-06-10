@@ -7,6 +7,8 @@ import plotly.express as px
 import plotly.graph_objects as go
 # from streamlit_extras import addvertical_space as avs
 
+
+#Changing the output format of numbers
 def format(number):
     if number >= 1_000_000_000:
         formatted_number = f"{number / 1_000_000_000:.2f}B"
@@ -44,6 +46,8 @@ st.write("\n\n\n")
 st.sidebar.write("\n\n\n")
 
 #rad2 = st.radio("",["Data and Insights :mag:", "Sensitivity Analysis :chart_with_upwards_trend:"])
+
+#Radio button to navigate between portfolios
 
 rad = st.radio("Select portfolio to analyse : ",["PORT_USD", "PORT_EUR", "BOTH"], horizontal= True)
 exchg_rt = 1.0668
