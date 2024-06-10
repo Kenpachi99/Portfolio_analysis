@@ -47,7 +47,9 @@ st.sidebar.write("\n\n\n")
 
 rad = st.radio("Select portfolio to analyse : ",["PORT_USD", "PORT_EUR", "BOTH"], horizontal= True)
 exchg_rt = 1.0668
-xls = pd.ExcelFile(r"C:\Users\ravis\Documents\GIT-GOOD\Portfolio_analysis\Portfolio_holdings.xlsx")
+#xls = pd.ExcelFile(r"C:\Users\ravis\Documents\GIT-GOOD\Portfolio_analysis\Portfolio_holdings.xlsx")
+xls = pd.ExcelFile(r"Portfolio_holdings.xlsx")
+
 port_eur = pd.read_excel(xls, 'PORT_EUR', skiprows=5)
 port_usd = pd.read_excel(xls, 'PORT_USD', skiprows=5)
 
